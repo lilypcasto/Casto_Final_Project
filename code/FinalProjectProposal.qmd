@@ -1,0 +1,71 @@
+---
+title: "Final Project Proposal"
+author: "Ellen Bledsoe"
+format: pdf
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Final Project Proposal
+
+Answering the questions in this document are worth 20 points for Question 5 in Week 9's Assignment.
+
+## Where to Find Data
+
+**NOTE: If you have your own data from a research project, use it!**
+
+If you don't have your own data, here are some suggestions for where to find data:
+
+1.  From your lab group
+
+    If you are working in a lab group, you can almost certainly find data to work with from your lab! Ask your PI or other lab members if you can use their data for this project. It is often helpful to have data that relates somewhat to a project or topic you are familiar with.
+
+2.  From the "Data is Plural" Archive
+
+    [Data is Plural](https://www.data-is-plural.com/) is a weekly newsletter about complied datasets that people have found. They have an archive of all of the datasets that have been included in the newsletters, which is nearly 2000.
+
+    Just because the datasets have been compiled does not mean that they are clean! I've used a few of them in class as demonstrations.
+
+3.  From an agency, NGO, or non-profit
+
+    If you have contacts in a local, state, or federal agency or non-profit, they likely have some languishing data floating around that you can clean up.
+
+4.  A data repository
+
+    There are many data repositories where you can find data. I would recommend sticking to some of the other options above to keep your search a bit more constrained, but feel free to ultimately use any dataset you find that you would like to use.
+
+5.  From me!
+
+    If you aren't having any success finding a dataset, let me know. I have a few I can share with you, if needed.
+
+## Project Guidelines
+
+As a reminder, the general guidelines for the final project that the project will need to include core concepts covered in a certain number of weeks (6 for RNR 437, 10 for RNR 537), bringing together many aspects of what we will have learned through the course of the semester.
+
+The final project for this course is worth 300 points (RNR 437) or 500 points (RNR 537).
+
+## Questions
+
+The following answers are not binding! You can change your final project as much as you'd like from what you propose here.
+
+Answering these questions is meant to get you thinking about what data you would like to use and what tasks you might perform with the data.
+
+Note: Your data set does not need to be ecological in nature if you have another interest. It should also not be a dataset that we have used in class (see me if you have questions).
+
+1.  What data are you planning to use for the final project? Describe the data: its contents, its format(s), one or more dataframes, etc. If you have a link to the dataset, please include it. If you have a file that you can upload, please add it to the assignment submission.
+
+2.  Does this data need to be cleaned in any way to make it tidy? If so, what needs to occur?
+
+3.  Speaking generally, what tasks will you perform with this dataset? It might include tasks that we have not yet covered how to accomplish in class, but come up with a general plan that you would like to follow.
+
+4.  One of the requirements of the final project is to make some type of plot using `ggplot2` with the data. What do you plan to plot from your data?
+
+*Answer*:
+
+1.  I am planning on using a csv dataset from Data Is Pleural on Canadian Active Wildfires. It contains information on the Agency, Fire name, start date, hectares burned, stage of control, timezone, and response type. I will add the sheets file to the assignment submission.
+2.  Yes. The names of the columns are unclear. Several data spaces are blank and are devoid of data. IN most columns, the data is both quantitative and qualitative. There is probably much more too, but these are the largest issues with the dataset.
+3.  I will rename the columns to make them more understandable and easier to remember for use in R. I will also change the blank spaces to NA or some other substitute as we have learned in class. The data in the columns are very disorganized with some acronyms, full writing, values, etc, so I will need to figure out how to tidy all that up.
+4.  I could plot the magnitude (large-ness) of the fires by location, which would aid in identifying the most prone or vunerable areas to fire. I could also plot fires by date, but since they are all from 2025, I don't think it would be quite as informational as otherr graphs.
