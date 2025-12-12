@@ -11,7 +11,7 @@ editor: visual
 
 ## Introduction
 
-Wildfires continue to be a major environmental challenge in Canada in 2025, affecting air quality, ecosystems, and communities across multiple provinces and territories. Because wildfire activity can change quickly and varies widely by region, analyzing wildfire data in programs and code allows us to track patterns, compare conditions visually, and detect trends that aren't obvious from soely raw numbers alone. Creating graphs and visualizations helps turn complex data sets into clearer insights which can supporting better decision-making and action. This year's wildfires in Canada have been monitored into a dataset; I will be using code to clean the data set, and then create helpful visualizations to better analyze the data (Week 7). The following include key terms and aspects of the data set that should be defined for better understanding:
+Wildfires continue to be a major environmental challenge in Canada in 2025, affecting air quality, ecosystems, and communities across multiple provinces and territories. Because wildfire activity can change quickly and varies widely by region, analyzing wildfire data in programs and code allows us to track patterns, compare conditions visually, and detect trends that aren't obvious from soely raw numbers alone. Creating graphs and visualizations helps turn complex data sets into clearer insights which can supporting better decision-making and action. This year's wildfires in Canada have been monitored into a dataset; I will be using code to clean the data set, and then create helpful visualizations to better analyze the data. The following include key terms and aspects of the data set that should be defined for better understanding:
 
 \- **Agency**: refers to the fire management agencies– the provinces, territories, and parks– involved in the fire incident. Provinces include: Alberta (ab), British Colombia (bc), Manitoba (mb), New Brunswick (nb), Nove Scotia (ns), Ontario (on), Quebec (qc). Territories include: Northwest (nt) and Yukon (yt). Federal agencies include: Parks Canada (pc). Note: The following two are not Canadian fire management agencies: Continental U.S. (conus) and Alaska (ak).
 
@@ -45,19 +45,26 @@ Wildfires continue to be a major environmental challenge in Canada in 2025, affe
 
 ## Data Set Analysis
 
-This analysis begins by loading the tidyverse for data-cleaning and visualization tools, followed by importing the wildfire dataset as wildfires. From there, the code cleans column names and values, standardizes categories, and generates visualizations to explore patterns in the data.
+This analysis begins by installing all necessary packages needed for the entire project and then loading them for data-cleaning and visualization, followed by importing the wildfire dataset as wildfires. From there, the code cleans column names and values, standardizes categories, and generates visualizations to explore patterns in the data.
 
 #### Load and go
 
 ```{r}
-library(tidyverse)
+install.packages("sf")
+install.packages("rnaturalearth")
+install.packages("rnaturalearthdata")
+library(tidyverse)   
+library(sf)          
+library(rnaturalearth)
+library(lubridate)
+
 
 wildfires <- read_csv("../data_raw/activefires.csv")
 ```
 
 #### Renaming & Filtering
 
-To improve clarity and streamline both my workflow and public understanding, I first renamed several column names. I then filtered the data set to keep only Canadian wildfires, removing rows originating from the U.S. and Alaska (Week \_\_).
+To improve clarity and streamline both my workflow and public understanding, I first renamed several column names. I then filtered the data set to keep only Canadian wildfires, removing rows originating from the U.S. and Alaska.
 
 ```{r}
 wildfires <- wildfires %>% 
@@ -75,3 +82,55 @@ unique(wildfires$agency)
 ```
 
 Filtering out the non-Canadian sites surprisingly resolved several issues. First, it eliminated the problem of replacing blank values with NAs, since those blanks only appeared in the "ak" and "conus" rows. Second, it removed the need to standardize the stage_of_control column into two-letter codes, because all of the non-standard character and percent values were also limited to the U.S. and Alaska rows. So after filtering, the remaining Canadian data were already consistent, so no further cleaning was required.
+
+#### Data Visualization
+
+Visualizing data is a crucial part of analyzing collected information and making predictions. It is important not only to create visually appealing maps but also to ensure that they accurately convey the most relevant information, to enable meaningful insights and results.
+
+This first map shows the location and sizes of Canadian wildfires in 2025. To create it, I converted the wildfires data set into an sf (“simple features”) object, which stores latitude and longitude as a single geometry point and works well with mapping CRS's like 4326. I then categorized fire intensity by size (hectares) and assigned colors (red, orange, yellow) to match intensity. Finally, I created a Canada basemap and overlaid the wildfire data using ggplot and defining the zoom parameters.
+
+```{r}
+wildfires <- wildfires <- st_as_sf(wildfires, coords = c("longitude", "latitude"),
+                         crs = 4326, remove = FALSE)
+
+#categorize the fire intensity by creating categories for size of the fire.
+wildfires$size_cat <- cut(wildfires$hectares,
+                             breaks = c(-Inf, 100, 1000, Inf),
+                             labels = c("1–100", "101–1000", ">1000"))
+
+
+fire_colors <- c("1–100" = "yellow", 
+                 "101–1000" = "orange", 
+                 ">1000" = "red")
+
+
+canada <- ne_countries(scale = "medium", country = "canada", returnclass = "sf")
+
+
+fire_size_map <- ggplot() +
+  geom_sf(data = canada, fill = "white", color = "gray70", size= 0.3) +
+  geom_sf(data = wildfires, aes(color = size_cat), size = 3, alpha = 1) +
+  scale_color_manual(values= fire_colors, name="Fire Size (hectares)") + 
+  coord_sf(xlim = c(-142, -50), ylim = c(41, 84), expand = FALSE) +
+  labs(title = "Wildfires in Canada - 2025") +
+  theme_minimal() 
+  
+fire_size_map
+
+ggsave("../outputs/fire_size_map.png")
+
+```
+
+This second figure shows the shows frequency of wildfires for the 6 months that were recorded in 2025. To create this bar plot, I first added a new column called `month` by extracting the month from the `start_date` column. The resulting bar plot provides an important overview of wildfire trends, helping to identify seasonal patterns or peak months, which is crucial for planning fire prevention strategies, allocating resources, and predicting potential higher-risk periods.
+
+```{r}
+wildfires$month <- month(wildfires$start_date, label = TRUE, abbr= TRUE)
+
+
+fire_month_plot <- ggplot(wildfires, aes(x = month, y = hectares)) +
+  geom_col(fill = "sienna2") +
+  labs(x = "Month", y = "Hectares", title = "Wildfire Size per Recorded Month in 2025") +
+  theme_minimal()
+
+ggsave("outputs/fire_month_plot.png")
+```
