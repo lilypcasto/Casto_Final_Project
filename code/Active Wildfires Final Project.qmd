@@ -1,27 +1,77 @@
 ---
 title: "WFSC Final Project"
 author: "Lily Casto"
-format: html
+format: gfm
 editor: visual
 ---
 
-## Quarto
+# Canadian Wildfires of 2025
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+#### ![](images/clipboard-3942029801.png)
 
-## Running Code
+## Introduction
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+Wildfires continue to be a major environmental challenge in Canada in 2025, affecting air quality, ecosystems, and communities across multiple provinces and territories. Because wildfire activity can change quickly and varies widely by region, analyzing wildfire data in programs and code allows us to track patterns, compare conditions visually, and detect trends that aren't obvious from soely raw numbers alone. Creating graphs and visualizations helps turn complex data sets into clearer insights which can supporting better decision-making and action. This year's wildfires in Canada have been monitored into a dataset; I will be using code to clean the data set, and then create helpful visualizations to better analyze the data (Week 7). The following include key terms and aspects of the data set that should be defined for better understanding:
+
+\- **Agency**: refers to the fire management agencies– the provinces, territories, and parks– involved in the fire incident. Provinces include: Alberta (ab), British Colombia (bc), Manitoba (mb), New Brunswick (nb), Nove Scotia (ns), Ontario (on), Quebec (qc). Territories include: Northwest (nt) and Yukon (yt). Federal agencies include: Parks Canada (pc). Note: The following two are not Canadian fire management agencies: Continental U.S. (conus) and Alaska (ak).
+
+\- **Firename**: refers to the official incident name or code assigned to a wildfire or prescribed burn. The data in this column are so extensively different, and contains information from a huge variety including Canadian wildfire codes, U.S. wildfire codes, U.S. prescribed fires, human-named fires, numeric-only fires, and multi-word geographic names.
+
+\- **Location of the fire:** latitude and longitude values
+
+\- **Start date of fire**: Year-Month-Day
+
+\- **Hectares:** Number of hectares burned
+
+\- **Stage of control**: includes: under control (UC), out of control (OC), being held (BH), % contained values, "Active," and "Prescribed."
+
+\- **Time zone**: time zone of the fire start location. Below is a quick reference to the acronyms, their meanings, and their offset values.
+
+| Code Time Zone | Meaning                | Offset  |
+|----------------|------------------------|---------|
+| **PDT**        | Pacific Daylight Time  | UTC − 7 |
+| **PST**        | Pacific Standard Time  | UTC − 8 |
+| **MDT**        | Mountain Daylight Time | UTC − 6 |
+| **MST**        | Mountain Standard Time | UTC − 7 |
+| **CDT**        | Central Daylight Time  | UTC − 5 |
+| **CST**        | Central Standard Time  | UTC − 6 |
+| **EDT**        | Eastern Daylight Time  | UTC − 4 |
+| **EST**        | Eastern Standard Time  | UTC − 5 |
+| **ADT**        | Atlantic Daylight Time | UTC − 3 |
+| **AST**        | Atlantic Standard Time | UTC − 4 |
+| **GMT**        | Greenwich Mean Time    | UTC ± 0 |
+
+\- **Response type**: refers to how the fire is being handled. Includes: Full (FUL) suppression strategy, often involving firefighters, aircraft, and heavy equipment to contain and extinguish the fire. Modified (MOD) suppression - often scaled back or selective where crew may only protect specific places/cabins and large areas may be allowed to burn naturally. Monitored (MOD) fires are observed, but not actively supressed unless conditions change.
+
+## Data Set Analysis
+
+This analysis begins by loading the tidyverse for data-cleaning and visualization tools, followed by importing the wildfire dataset as wildfires. From there, the code cleans column names and values, standardizes categories, and generates visualizations to explore patterns in the data.
+
+#### Load and go
 
 ```{r}
-1 + 1
+library(tidyverse)
+
+wildfires <- read_csv("../data_raw/activefires.csv")
 ```
 
-You can add options to executable code like this
+#### Renaming & Filtering
+
+To improve clarity and streamline both my workflow and public understanding, I first renamed several column names. I then filtered the data set to keep only Canadian wildfires, removing rows originating from the U.S. and Alaska (Week \_\_).
 
 ```{r}
-#| echo: false
-2 * 2
+wildfires <- wildfires %>% 
+  rename(start_date = `startdate`,
+         fire_name = `firename`,
+         latitude = `lat`,
+         longitude = `lon`,
+         time_zone = `timezone`)
+
+wildfires <- wildfires %>% 
+  filter (!agency %in% c("conus", "ak")) 
+
+#In order to double check and see if that worked, I can ask R to list out the rows of the agency dataframe: 
+unique(wildfires$agency)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+Filtering out the non-Canadian sites surprisingly resolved several issues. First, it eliminated the problem of replacing blank values with NAs, since those blanks only appeared in the "ak" and "conus" rows. Second, it removed the need to standardize the stage_of_control column into two-letter codes, because all of the non-standard character and percent values were also limited to the U.S. and Alaska rows. So after filtering, the remaining Canadian data were already consistent, so no further cleaning was required.
