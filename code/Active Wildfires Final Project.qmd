@@ -114,11 +114,11 @@ fire_size_map <- ggplot() +
   coord_sf(xlim = c(-142, -50), ylim = c(41, 84), expand = FALSE) +
   labs(title = "Wildfires in Canada - 2025") +
   theme_minimal() 
-  
 fire_size_map
 
-ggsave("../outputs/fire_size_map.png")
 
+
+ggsave("../outputs/fire_size_map.png")
 ```
 
 This second figure shows the shows frequency of wildfires for the 6 months that were recorded in 2025. To create this bar plot, I first added a new column called `month` by extracting the month from the `start_date` column. The resulting bar plot provides an important overview of wildfire trends, helping to identify seasonal patterns or peak months, which is crucial for planning fire prevention strategies, allocating resources, and predicting potential higher-risk periods.
@@ -131,6 +131,7 @@ fire_month_plot <- ggplot(wildfires, aes(x = month, y = hectares)) +
   geom_col(fill = "sienna2") +
   labs(x = "Month", y = "Hectares", title = "Wildfire Size per Recorded Month in 2025") +
   theme_minimal()
+fire_month_plot
 
-ggsave("outputs/fire_month_plot.png")
+ggsave("../outputs/fire_month_plot.png")
 ```
