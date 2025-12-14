@@ -116,8 +116,6 @@ fire_size_map <- ggplot() +
   theme_minimal() 
 fire_size_map
 
-
-
 ggsave("../outputs/fire_size_map.png")
 ```
 
@@ -125,7 +123,6 @@ This second figure shows the shows frequency of wildfires for the 6 months that 
 
 ```{r}
 wildfires$month <- month(wildfires$start_date, label = TRUE, abbr= TRUE)
-
 
 fire_month_plot <- ggplot(wildfires, aes(x = month, y = hectares)) +
   geom_col(fill = "sienna2") +
@@ -135,3 +132,36 @@ fire_month_plot
 
 ggsave("../outputs/fire_month_plot.png")
 ```
+
+#### Creating A Function
+
+Wildfires are generally more prominent and dangerous during the summer months, when temperatures are highest and conditions are driest. The following `if_else` function categorizes Canadian wildfires to help identify the most hazardous fires over the past year. Fires are classified as **High Risk** (hectares \> 1000), **Medium Risk** (hectares \> 100), and **Low Risk** (hectares ≤ 100). This considers a wildfire risk high only if it's large and happens in the peak wildfire season (May, June, July, or August).
+
+```{r}
+fire_risk <- function(hectares, month) {
+  if (hectares > 1000 & month %in% c("May", "Jun", "Jul", "Aug")) {
+    category <- "High Risk"
+  } else if (hectares > 100) {
+    category <- "Medium Risk"
+  } else {
+    category <- "Low Risk"
+  }
+  return(category)
+}
+
+#To check and see if the categories are assigned to the proper value ranges, we can hypothesize outputs with test hectare values in different peak fire months.
+fire_risk(1500, "Jul")  
+fire_risk(500, "May")    
+fire_risk(50, "May") 
+
+
+#Applying the function to the dataset - mapply allows it to apply a function to multiple vectors.
+wildfires$risk_level <- mapply(fire_risk, wildfires$hectares, wildfires$month)
+
+```
+
+#### Conclusion
+
+Overall, this project analyzed the active wildfires in Canada during 2025, using a combination of data cleaning, visualization, and categorization techniques. The data set was carefully organized and tidied to ensure accuracy and clarity. Through maps, plots, and classification of fire severity, we were able to identify key trends, such as seasonal patterns, fire size distribution, and areas most at risk. These insights not only make the data more accessible to the general public but also provide valuable information for fire officials and policymakers to improve management and response strategies in future wildfire seasons.
+
+![](images/clipboard-3302415555.jpeg)
