@@ -7,9 +7,9 @@ This is the repo for the Final Project for Data Wrangling.
 #### The repository includes code for the documentation of Canadian active wildfires in 2025.
 
 **File Structure:**
-- `data_raw/` – raw datasets
-- `code/` – R code and documents
-- `outputs/` – cleaned and finalized data, figures, tables, and reports
+- `data_raw` – raw datasets
+- `code` – R code and documents
+- `outputs` – cleaned and finalized data, figures, tables, and reports
 - `README.md` – overview of the project
 
 **Data Set Contents:** The data set contains information on the
