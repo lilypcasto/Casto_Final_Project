@@ -1,3 +1,9 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
 # Casto_Final_Project
 
 This is the repo for the Final Project for Data Wrangling.
