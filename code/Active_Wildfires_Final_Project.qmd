@@ -47,6 +47,8 @@ Wildfires continue to be a major environmental challenge in Canada in 2025, affe
 
 This analysis begins by installing all necessary packages needed for the entire project and then loading them for data-cleaning and visualization, followed by importing the wildfire dataset as wildfires. From there, the code cleans column names and values, standardizes categories, and generates visualizations to explore patterns in the data.
 
+Note: If needed, install these packages: install.packages("sf") install.packages("rnaturalearth") install.packages("rnaturalearthdata"). RMarkdown does not allow them in the conversion of a .qmd to .md.
+
 #### Load and go
 
 ```{r}
